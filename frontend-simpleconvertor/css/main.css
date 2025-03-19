@@ -1,0 +1,26 @@
+html{font-family:"Open Sans", "Roboto", sans-serif}
+.navbar-fixed{z-index:1001;position:relative}
+.navbar-fixed nav{position:fixed}nav{background-color:#fff;width:100%;font-weight:300;z-index:1001;overflow:visible !important}
+nav .nav-wrapper{height:100%;padding:0 30px;position:relative}
+nav .nav-wrapper .brand-logo{color:#000;font-size:34px}
+nav .nav-wrapper img{vertical-align:middle}
+nav,.navbar-fixed{line-height:85px;height:85px}
+nav a,nav ul li a,.navbar-fixed a,.navbar-fixed ul li a{color:#212121}#splash-blue{background-color:#FFF;background-image:url(../images/escheresque_ste_@2X.png)}
+nav .brand-logo img,nav .brand-logo span{max-height:85px;vertical-align:top;text-transform:uppercase;font-size:0.8em}
+ul.slides div.caption{width:30% !important}
+ul.slides div.caption h1,ul.slides div.caption h2,ul.slides div.caption h3,ul.slides div.caption h4,ul.slides div.caption h5,
+ul.slides div.caption h6{filter:none;width:500px;font-size:1.1em;border-width:0px;left:0px;top:0px;font-size:2em;opacity:0.8;visibility:visible;background-color:#999;border-left:solid 5px #FF9800;border-right:solid 5px #FF9800;text-align:center;padding:1em;background-color:rgba(48,47,49,0.7) !important;border-radius:5px !important;line-height:130%}
+.section-title{text-transform:uppercase;color:#FF9800;padding:20px}
+.section-title_welcome{text-transform:uppercase;color:#228B22;padding:20px}
+.section-title:before,.section-title:after{background-color:#FF9800;content:"";display:inline-block;height:1px;position:relative;vertical-align:middle;width:30%}
+.section-title:before{right:0.5em;margin-left:-50%}
+.section-title:after{left:0.5em;margin-right:-50%}
+#ecosystem ul li{margin-left:4em;list-style-type:circle}
+#why-solutions .bloc-title{border-top:solid 5px #ff9800;font-size:1.2em;padding:10px}
+#why-solutions .card-title{color:#ff9800}
+/*a{color:#FF9800}*/
+.circular{width:100px;height:100px;position:relative;overflow:hidden;border-radius:50%;margin:2.5em}
+.circular img{display:inline;margin:0 auto;height:100%;width:auto}
+.employee .author{font-weight:bold;font-size:1.1em;text-transform:uppercase}
+.employee .role{font-weight:bold;font-size:1.1em;color:#FF9800}
+footer .footer-copyright{font-weight:300;overflow:hidden;min-height:50px;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-ms-flex-align:center;align-items:center;padding:10px 0px;color:rgba(255,255,255,0.8);background-color:rgba(51,51,51,0.08)}

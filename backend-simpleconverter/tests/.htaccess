@@ -1,0 +1,6 @@
+RewriteEngine On    # Turn on the rewriting engine
+RewriteRule ^ConfigurationTest$ ConfigurationTest.php [NC,L]
+RewriteRule ^DecodersTest$ DecodersTest.php [NC,L]
+RewriteRule ^HeadersTest$ HeadersTest.php [NC,L]
+RewriteRule ^QuickCallsTest$ QuickCallsTest.php [NC,L]
+RewriteRule ^RestTest$ RestTest.php [NC,L]

@@ -1,0 +1,16 @@
+1- harristo@walkap.net; harristo123
+2- tofo123@walka.net; tot@1234
+3- fkfjko@walkap.net; hjf134 
+4- tamo123@walkap.net; tamo123-1
+5- teteoi@gmail.com; hgjf12+
+6- armand123@yahoo.fr
+7- walkaptest001@walkap.net; Walkp@001
+
+* tables : countries, merchant, merchant_login
+
+armandin kuvaus
+armand thierry DJAPPI <leppidja@gmail.com>
+	
+FI29 5730 0820 8110 12
+
+Kirjoitustehtävä: Kaupunki vai maaseutu

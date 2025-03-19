@@ -1,0 +1,99 @@
+.ui-button
+{
+  /* background-color: #EE7600;   */
+   background: url(../images/img06.jpg); 
+   border:2px solid #26a69a;
+   border-radius: 4px;
+   box-shadow: 1px 1px 2px #808080;
+   color: #000000;
+   cursor: pointer;
+   display: inline-block;
+   font-size: 12px;
+   font-weight: bold;
+   margin-right: 0.1em;
+   overflow: visible;
+   padding: 1px 8px;
+   position: relative;
+   text-align: center;
+   text-decoration: none !important;
+}
+
+.ui-button-active
+{
+  /* background-color: #EE7600;*/
+   background: url(../images/img06.jpg);
+   border:2px solid #000000;
+   border-radius: 4px;
+   box-shadow: 1px 1px 2px #808080;
+   color: #000000;
+   cursor: pointer;
+   display: inline-block;
+   font-size: 12px;
+   font-weight: bold;
+   margin-right: 0.1em;
+   overflow: visible;
+   padding: 1px 8px;
+   position: relative;
+   text-align: center;
+   text-decoration: none !important;
+
+}
+
+
+.buttontext
+{
+color:#000;
+font-size:16px;
+font-family:Arial,Helvetica,sans-serif;
+margin-left: auto;
+margin-right: auto;
+}
+
+.buttontext_red
+{
+color:#B22222;;
+font-size:16px;
+font-family:Arial,Helvetica,sans-serif;
+margin-left: auto;
+margin-right: auto;
+}
+
+.buttontext_momo
+{
+color:#000;
+font-size:14px;
+font-weight: bold;
+font-family:Arial,Helvetica,sans-serif;
+margin-left: auto;
+margin-right: auto;
+}
+
+nav i.material-icons {
+  line-height: 85px;
+}
+
+nav ul.dropdown-content {
+  top: 85px !important;
+}
+
+.section-title:before, .section-title:after {
+    width: 100px!important;
+}
+
+p.price{
+  font-size: 1.8em;
+}
+
+p.description {
+  font-size: 0.9em;
+  font-style: italic;
+}
+
+.link{
+  color :#000000;
+  font-size:12px;
+  font-family:Georgia, "Times New Roman", Times, serif;
+  text-decoration: underline;
+}
+
+
