@@ -63,10 +63,10 @@ class currencylists
             }
 
             $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::INFO));
-			$this->logger->info('Currencies saved successfully to' . $filePath  .  '\n');
+            $this->logger->info('Currencies saved successfully to' . $filePath . '\n');
             return [
                 'status' => 200,
-                'success' => 'Currencies saved successfully to' . $filePath  .  '\n'
+                'success' => 'Currencies saved successfully to' . $filePath . '\n'
             ];
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage();
@@ -98,7 +98,7 @@ class currencylists
 
             $response = file_get_contents($filePath);
             if (is_object($response)) {
-                $response = json_encode($response); 
+                $response = json_encode($response);
             }
             // Decode the JSON response into an associative array if it is a string
             if (is_string($response)) {
@@ -140,7 +140,7 @@ class currencylists
     }
 
     // Validate currencies
-    function validateCurrencies($cur1, $cur2)
+    function validateCurrencies($cur1, $cur2, $amount, $decimal)
     {
         try {
             $supportedCurrencies = $this->getSupportedcurrencies(__DIR__ . '/../data/currencies.json');
@@ -149,21 +149,48 @@ class currencylists
             if (isset($supportedCurrencies['data'])) {
                 $supportedCurrencycodes = array_column($supportedCurrencies['data'], 'code');
             }
-            
-            if (!in_array($cur1, $supportedCurrencycodes) || !in_array($cur2, $supportedCurrencycodes)) {               
+
+            if (!in_array($cur1, $supportedCurrencycodes) || !in_array($cur2, $supportedCurrencycodes)) {
                 $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
                 $this->logger->Error('Error:' . 'Unsupported currency: ' . $cur1 . ' , ' . $cur2 . ' , amount  required.');
                 return [
                     'status' => 400,
                     'error' => 'Unsupported currency: ' . $cur1 . ' , ' . $cur2 . ' , amount  required.'
                 ];
+
             }
+
+            
+            //echo $amount;
+            $amount = str_replace(',', '.', $amount);
+            echo $amount; echo "==";
+            if (filter_var($amount, FILTER_VALIDATE_INT) === false || $amount < 0) {
+                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
+                $this->logger->warning('Warning:' . 'Invalid amount. It must be an integer greater or equals to 0.');
+                return [
+                    'status' => 400,
+                    'error' => 'Invalid amount. It must be an integer greater or equals to 0.'
+                ];
+            }
+          
+           
+            $decimal = str_replace(',', '.', $decimal);
+            echo $decimal;
+            if (filter_var($decimal, FILTER_VALIDATE_INT) === false || $decimal < 0) {
+                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
+                $this->logger->warning('Warning:' . 'Invalid decimal value. It must be an integer greater or equals to 0.');
+                return [
+                    'status' => 400,
+                    'error' => 'Invalid decimal value. It must be an integer greater or equals to 0.'
+                ];
+            }
+           
 
             return [
                 'status' => 200,
-                'message' => 'Currencies are valid.'
+                'message' => 'Currencies and amount are valid.'
             ];
-        } catch (Exception $e) {            
+        } catch (Exception $e) {
             $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
             $this->logger->Error(json_encode(['error' => $e->getMessage()]));
             return [

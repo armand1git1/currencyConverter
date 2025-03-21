@@ -78,13 +78,13 @@ class CurrencyConverterApi
 				];
 		}
 	}
-	public function CallAPI($method, $url, $data = "", $action = "")
+	public function CallAPI($method, $url, $data = "", $decimalPart=0, $action = "")
 	{
 
 		$this->intitializedApi($url);
 		$arrayConversion = array();
 
-		// $this->cleanCache();
+		$this->cleanCache();
 		// Check if the response is cached
 		$cacheKey = md5($method . $url . json_encode($data));
 		if ($this->varCahe->has($cacheKey)) {
@@ -164,13 +164,14 @@ class CurrencyConverterApi
 				// var_dump($response);
 				$arrayConversion['base_currency'] = $decodedResponse['base_currency'];
 				$arrayConversion['quote_currency'] = $decodedResponse['quote_currency'];
+				$arrayConversion['amount'] = $floatValue = floatval($data . '.' . $decimalPart);;
 				$arrayConversion['quote'] = $decodedResponse['quote'];
 				$arrayConversion['date'] = $decodedResponse['date'];
 
 				// Calculate the converted amount if 'quote' and 'data' are available
 				if (isset($decodedResponse['quote']) && isset($data)) {
-
-					$arrayConversion['convertedAmount'] = $decodedResponse['quote'] * $data;
+					$floatValue = floatval($data . '.' . $decimalPart);
+					$arrayConversion['convertedAmount'] = $decodedResponse['quote'] * $arrayConversion['amount'];
 					$locale = 'fi_FI'; // Set the desired locale  'en_US', en_GB, 'fr_FR', fi_FI etc.
 					$formatter = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
 					$arrayConversion['formatedAmount'] = $formatter->formatCurrency($arrayConversion['convertedAmount'], $decodedResponse['quote_currency']);

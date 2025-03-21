@@ -4,7 +4,8 @@ simple app use to convert currency
 2) The apps : the backend have been executed following instruction of the requirement. 
 3) Testing and implementation 
     3.1 : A Test version of Backend available online : hosted by Armand 
-    link : 
+    link : https://site.walkap.net/currencyConverter/backend-currencyconverter/converter/read.php?cur1=eur&cur2=usd&amount=50&amount=5&decimal=90
+    How it works : just changed the value of cur1; cur2, amount, decimal in the url to have expected result
     3.2 : A dockerfile will be available soon for deployment
     3.3 : Install and test locally 
       * Needed  Locally, i use : php version  7.4.25 & Apache version : [httpd-2.4.35- Wind 64 -VC 15]  
