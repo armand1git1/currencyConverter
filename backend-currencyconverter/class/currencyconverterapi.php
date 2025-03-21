@@ -49,8 +49,9 @@ class CurrencyConverterApi
 		$this->curl->setOpt(CURLOPT_TIMEOUT, getenv('CURL_TIMEOUT') ?: 30);
 		$this->curl->setOpt(CURLOPT_HTTPHEADER, $this->getMyheader($url));
 	}
-
-	public function cleanCache()
+    
+	// clean cache from time to time
+ 	public function cleanCache()
 	{
 		try {
 			if ($this->varCahe->clear()) {			
@@ -83,7 +84,7 @@ class CurrencyConverterApi
 		$this->intitializedApi($url);
 		$arrayConversion = array();
 
-		$this->cleanCache();
+		// $this->cleanCache();
 		// Check if the response is cached
 		$cacheKey = md5($method . $url . json_encode($data));
 		if ($this->varCahe->has($cacheKey)) {
@@ -179,7 +180,7 @@ class CurrencyConverterApi
 				}
 
 				return $arrayConversion;
-			} else {
+			} else {				
 				return $decodedResponse;
 			}
 

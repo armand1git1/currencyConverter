@@ -61,7 +61,9 @@ class currencylists
                     'error' => 'Failed to save currencies to file: ' . $filePath
                 ];
             }
-            
+
+            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::INFO));
+			$this->logger->info('Currencies saved successfully to' . $filePath  .  '\n');
             return [
                 'status' => 200,
                 'success' => 'Currencies saved successfully to' . $filePath  .  '\n'
@@ -150,10 +152,10 @@ class currencylists
             
             if (!in_array($cur1, $supportedCurrencycodes) || !in_array($cur2, $supportedCurrencycodes)) {               
                 $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
-                $this->logger->Error('Error:' . 'Unsupported currency: ' . $cur1 . ' or ' . $cur2);
+                $this->logger->Error('Error:' . 'Unsupported currency: ' . $cur1 . ' , ' . $cur2 . ' , amount  required.');
                 return [
                     'status' => 400,
-                    'error' => 'Unsupported currency: ' . $cur1 . ' or ' . $cur2
+                    'error' => 'Unsupported currency: ' . $cur1 . ' , ' . $cur2 . ' , amount  required.'
                 ];
             }
 
