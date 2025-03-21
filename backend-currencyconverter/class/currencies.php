@@ -163,7 +163,6 @@ class currencylists
             
             //echo $amount;
             $amount = str_replace(',', '.', $amount);
-            echo $amount; echo "==";
             if (filter_var($amount, FILTER_VALIDATE_INT) === false || $amount < 0) {
                 $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
                 $this->logger->warning('Warning:' . 'Invalid amount. It must be an integer greater or equals to 0.');
@@ -175,7 +174,7 @@ class currencylists
           
            
             $decimal = str_replace(',', '.', $decimal);
-            echo $decimal;
+           
             if (filter_var($decimal, FILTER_VALIDATE_INT) === false || $decimal < 0) {
                 $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
                 $this->logger->warning('Warning:' . 'Invalid decimal value. It must be an integer greater or equals to 0.');
