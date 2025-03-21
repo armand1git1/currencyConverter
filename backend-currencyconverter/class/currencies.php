@@ -7,7 +7,7 @@ include_once '../init.php';
 class currencylists
 {
     private $logger; // logger that will be passed to object class, making it easy to test
-// Constructor to initialize the logger
+    // Constructor to initialize the logger
 
     public function __construct(Logger $logger)
     {
@@ -21,9 +21,8 @@ class currencylists
         $directory = dirname($filePath);
         if (!is_dir($directory)) {
             if (!mkdir($directory, 0777, true) && !is_dir($directory)) {
-                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::ERROR));
+                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
                 $this->logger->ERROR('Failed to create directory:' . $directory);
-                // throw new Exception('Failed to create directory: ' . $directory);
                 return [
                     'status' => 500,
                     'error' => 'Failed to create directory: ' . $directory
@@ -34,10 +33,8 @@ class currencylists
         // Convert the array to JSON
         $json = json_encode($currenciesArray, JSON_PRETTY_PRINT);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::WARNING));
+            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
             $this->logger->ERROR('Failed to encode currencies to JSON: ' . json_last_error_msg());
-            // throw new Exception('Failed to encode currencies to JSON: ' . json_last_error_msg());
-
             return [
                 'status' => 500,
                 'error' => 'Failed to encode currencies to JSON: ' . json_last_error_msg()
@@ -48,9 +45,8 @@ class currencylists
             $json = json_encode($currenciesArray, JSON_PRETTY_PRINT);
             // Check if JSON encoding was successful
             if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::WARNING));
+                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
                 $this->logger->WARNING('Failed to encode currencies to JSON: ' . json_last_error_msg());
-                // throw new Exception('Failed to encode currencies to JSON: ' . json_last_error_msg());
                 return [
                     'status' => 500,
                     'error' => 'Failed to encode currencies to JSON: ' . json_last_error_msg()
@@ -59,9 +55,8 @@ class currencylists
 
             // Save the JSON string to a file
             if (file_put_contents($filePath, $json) === false) {
-                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::ERROR));
+                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
                 $this->logger->ERROR('Failed to encode currencies to JSON: ' . json_last_error_msg());
-                // throw new Exception('Failed to save currencies to file: ' . $filePath);
                 return [
                     'status' => 500,
                     'error' => 'Failed to save currencies to file: ' . $filePath
@@ -74,7 +69,7 @@ class currencylists
             ];
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage();
-            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::ERROR));
+            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
             $this->logger->ERROR($e->getMessage());
             // throw new Exception("Error: " . $e->getMessage());
             return [
@@ -92,31 +87,28 @@ class currencylists
     {
         try {
             if (!file_exists($filePath)) {
-                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::ERROR));
+                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
                 $this->logger->ERROR('Currencies file not found.', ['file' => $filePath]);
                 return [
                     'status' => 404,
                     'error' => 'Currencies file not found.'
                 ];
-                // throw new Exception('Currencies file not found.');
             }
 
-            //$filePath= "C:/laragon/www/currencyConverter/backend-currencyconverter/data/currencies.json";
             $response = file_get_contents($filePath);
             if (is_object($response)) {
-                $response = json_encode($response); // Convert the object to a JSON string
+                $response = json_encode($response); 
             }
             // Decode the JSON response into an associative array if it is a string
             if (is_string($response)) {
                 $decodedResponse = json_decode($response, true);
                 if (json_last_error() !== JSON_ERROR_NONE) {
-                    $this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::ERROR));
+                    $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
                     $this->logger->ERROR('Invalid JSON response', ['file' => $filePath, 'response' => $response]);
                     return [
                         'status' => 400,
                         'error' => 'Invalid JSON response: ' . json_last_error_msg()
                     ];
-                    // throw new Exception('Invalid JSON response: ' . json_last_error_msg());
                 }
             } else {
                 // If the response is already an array, use it directly
@@ -124,9 +116,8 @@ class currencylists
             }
 
             if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::ERROR));
+                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
                 $this->logger->Error('Failed to parse currencies JSON file', ['file' => $filePath, 'response' => ""]);
-                // throw new Exception('Failed to parse currencies JSON file.');
                 return [
                     'status' => 500,
                     'error' => 'Failed to parse currencies JSON file '
@@ -138,7 +129,7 @@ class currencylists
                 'data' => $decodedResponse ?? []
             ];
         } catch (Exception $e) {
-            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::ERROR));
+            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
             $this->logger->Error('Error occurred while loading currencies', ['error' => $e->getMessage()]);
             return [
                 'status' => 500,
@@ -151,19 +142,16 @@ class currencylists
     function validateCurrencies($cur1, $cur2)
     {
         try {
-            // $supportedCurrencies['code'];
             $supportedCurrencies = $this->getSupportedcurrencies(__DIR__ . '/../data/currencies.json');
-            // print_r($supportedCurrencies);
             // Extract the 'code' values from the array of currencies
-            $supportedCurrencycodes = array_column($supportedCurrencies['data'], 'code');
+            $supportedCurrencycodes = array();
+            if (isset($supportedCurrencies['data'])) {
+                $supportedCurrencycodes = array_column($supportedCurrencies['data'], 'code');
+            }
             
-            if (!in_array($cur1, $supportedCurrencycodes) || !in_array($cur2, $supportedCurrencycodes)) {
-                //http_response_code(400); // Bad Request
-                // echo json_encode(['error' => 'Unsupported currency: ' . $cur1 . ' or ' . $cur2]);
-
-                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::ERROR));
+            if (!in_array($cur1, $supportedCurrencycodes) || !in_array($cur2, $supportedCurrencycodes)) {               
+                $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
                 $this->logger->Error('Error:' . 'Unsupported currency: ' . $cur1 . ' or ' . $cur2);
-                // throw new Exception('error:' . 'Unsupported currency: ' . $cur1 . ' or ' . $cur2);
                 return [
                     'status' => 400,
                     'error' => 'Unsupported currency: ' . $cur1 . ' or ' . $cur2
@@ -174,16 +162,11 @@ class currencylists
                 'status' => 200,
                 'message' => 'Currencies are valid.'
             ];
-        } catch (Exception $e) {
-            //http_response_code(500); // Internal Server Error
-            //echo json_encode(['error' => $e->getMessage()]);
-
-            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::ERROR));
+        } catch (Exception $e) {            
+            $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
             $this->logger->Error(json_encode(['error' => $e->getMessage()]));
-            // throw new Exception(json_encode(['error' => $e->getMessage()]));
             return [
                 'status' => 500,
-                // 'error' => $e->getMessage()
                 'error' => json_encode(['error' => $e->getMessage()])
             ];
 

@@ -27,7 +27,7 @@ class CurrencyConverterApi
 		} else {
 			// Access the environment variable
 			if ($_ENV['ApiKey'] != null) {
-				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::WARNING));
+				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
 				$this->logger->warning('API request failed', ['url' => $url, 'error' => 'No Api key.']);
 				return [
 					'status' => 500,
@@ -74,7 +74,7 @@ class CurrencyConverterApi
 			}
 
 			if ($this->curl->error) {
-				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::ERROR));
+				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
 				$this->logger->warning('API request failed', ['url' => $url, 'error' => $this->curl->errorMessage]);
 				// throw new Exception('Error: ' . $this->curl->errorCode . ': ' . $this->curl->errorMessage);
 				return [
@@ -95,9 +95,8 @@ class CurrencyConverterApi
 			if (is_string($response)) {
 				$decodedResponse = json_decode($response, true);
 				if (json_last_error() !== JSON_ERROR_NONE) {
-					$this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::ERROR));
+					$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
 					$this->logger->warning('Invalid JSON response', ['url' => $url, 'response' => $response]);
-					// throw new Exception('Invalid JSON response: ' . json_last_error_msg());
 					return [
 						'status' => 500,
 						'error' => 'Invalid JSON response: ' . json_last_error_msg() 
@@ -111,9 +110,8 @@ class CurrencyConverterApi
 			
 			// check if  the response is an array 
 			if (!is_array($decodedResponse)) {
-				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::ERROR));
+				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
 				$this->logger->warning('Unexpected response format', ['url' => $url, 'response' => $decodedResponse]);
-				// throw new Exception('Unexpected response format.');
 				return [
 					'status' => 500,
 					'error' => 'Error: Unexpected response format: ' 
@@ -123,9 +121,8 @@ class CurrencyConverterApi
 			if ($action === "convertCurrency") {
 			// Validate the response structure
 			if (!isset($decodedResponse['base_currency'], $decodedResponse['quote_currency'], $decodedResponse['quote'], $decodedResponse['date'])) {
-				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::ERROR));
+				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
 				$this->logger->error('Unexpected response format', ['url' => $url, 'response' => $decodedResponse]);
-				// throw new Exception('Unexpected response format.');
 				return [
 					'status' => 500,
 					'error' => 'Error: Unexpected response format: ' 
@@ -154,17 +151,12 @@ class CurrencyConverterApi
 		}
 
 		} catch (Exception $e) {
-
-			// use logging library like Monolog for structured logging 
-
-			$this->logger->pushHandler(new StreamHandler(__DIR__ . '/logs/api.log', Logger::WARNING));
+			$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
 			$this->logger->warning('API request failed', ['url' => $url, 'error' => $e->getMessage()]);
 			return [
 				'status' => 500,
 				'error' => 'Error occurred while loading currencies: ' . $e->getMessage()
-			];
-			
-			//throw new Exception('error: ' . $e->getMessage());
+			];		
 
 		}
 	}
