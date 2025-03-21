@@ -49,11 +49,41 @@ class CurrencyConverterApi
 		$this->curl->setOpt(CURLOPT_TIMEOUT, getenv('CURL_TIMEOUT') ?: 30);
 		$this->curl->setOpt(CURLOPT_HTTPHEADER, $this->getMyheader($url));
 	}
-	public function CallAPI($method, $url, $data = "",$action="")
+
+	public function cleanCache()
+	{
+		try {
+			if ($this->varCahe->clear()) {			
+				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::INFO));
+				$this->logger->info('Cache cleared successfully.');
+				return [
+					'status' => 200,
+					'message' => 'Cache cleared successfully.'
+				];
+			} else {			
+				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
+				$this->logger->WARNING('Failed to clear cache.');
+				return [
+					'status' => 500,
+					'message' => 'Failed to clear cache.'
+				];
+			}
+		} catch (Exception $e) {
+				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
+				$this->logger->ERROR('Error occurred while clearing cache', ['error' => $e->getMessage()]);
+				return [
+					'status' => 500,
+					'message' => 'Error occurred while clearing cache', ['error' => $e->getMessage()]
+				];
+		}
+	}
+	public function CallAPI($method, $url, $data = "", $action = "")
 	{
 
 		$this->intitializedApi($url);
 		$arrayConversion = array();
+
+		$this->cleanCache();
 		// Check if the response is cached
 		$cacheKey = md5($method . $url . json_encode($data));
 		if ($this->varCahe->has($cacheKey)) {
@@ -76,7 +106,6 @@ class CurrencyConverterApi
 			if ($this->curl->error) {
 				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
 				$this->logger->warning('API request failed', ['url' => $url, 'error' => $this->curl->errorMessage]);
-				// throw new Exception('Error: ' . $this->curl->errorCode . ': ' . $this->curl->errorMessage);
 				return [
 					'status' => 500,
 					'error' => 'Error: ' . $this->curl->errorCode . ': ' . $this->curl->errorMessage
@@ -84,8 +113,8 @@ class CurrencyConverterApi
 			}
 
 			$response = $this->curl->response;
-			// print_r($response);
-			//exit();
+
+
 
 			// Convert the response to a string if it is an object
 			if (is_object($response)) {
@@ -99,7 +128,7 @@ class CurrencyConverterApi
 					$this->logger->warning('Invalid JSON response', ['url' => $url, 'response' => $response]);
 					return [
 						'status' => 500,
-						'error' => 'Invalid JSON response: ' . json_last_error_msg() 
+						'error' => 'Invalid JSON response: ' . json_last_error_msg()
 					];
 				}
 			} else {
@@ -107,48 +136,52 @@ class CurrencyConverterApi
 				$decodedResponse = $response;
 			}
 
-			
+
 			// check if  the response is an array 
 			if (!is_array($decodedResponse)) {
 				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
 				$this->logger->warning('Unexpected response format', ['url' => $url, 'response' => $decodedResponse]);
 				return [
 					'status' => 500,
-					'error' => 'Error: Unexpected response format: ' 
+					'error' => 'Error: Unexpected response format: '
 				];
 			}
-            
 			if ($action === "convertCurrency") {
-			// Validate the response structure
-			if (!isset($decodedResponse['base_currency'], $decodedResponse['quote_currency'], $decodedResponse['quote'], $decodedResponse['date'])) {
-				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
-				$this->logger->error('Unexpected response format', ['url' => $url, 'response' => $decodedResponse]);
-				return [
-					'status' => 500,
-					'error' => 'Error: Unexpected response format: ' 
-				];
-			}
+				// Validate the response structure
+				if (!isset($decodedResponse['base_currency'], $decodedResponse['quote_currency'], $decodedResponse['quote'], $decodedResponse['date'])) {
+					$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));
+					$this->logger->error('Unexpected response format', ['url' => $url, 'response' => $decodedResponse]);
+					return [
+						'status' => 500,
+						'error' => 'Error: Unexpected response format: '
+					];
+				}
 
-			// Cache the response
-			$this->varCahe->set($cacheKey, $decodedResponse, 3600); // Cache for 1 hour
+				// Cache the response
+				$this->varCahe->set($cacheKey, $decodedResponse, 300); // Cache for 5 minutes
 
-			// var_dump($response);
-			$arrayConversion['base_currency'] = $decodedResponse['base_currency'];
-			$arrayConversion['quote_currency'] = $decodedResponse['quote_currency'];
-			$arrayConversion['quote'] = $decodedResponse['quote'];
-			$arrayConversion['date'] = $decodedResponse['date'];
+				// var_dump($response);
+				$arrayConversion['base_currency'] = $decodedResponse['base_currency'];
+				$arrayConversion['quote_currency'] = $decodedResponse['quote_currency'];
+				$arrayConversion['quote'] = $decodedResponse['quote'];
+				$arrayConversion['date'] = $decodedResponse['date'];
 
-			// Calculate the converted amount if 'quote' and 'data' are available
-			if (isset($decodedResponse['quote']) && $data) {
-				$arrayConversion['convertedAmount'] = $decodedResponse['quote'] * $data;
+				// Calculate the converted amount if 'quote' and 'data' are available
+				if (isset($decodedResponse['quote']) && isset($data)) {
+
+					$arrayConversion['convertedAmount'] = $decodedResponse['quote'] * $data;
+					$locale = 'fi_FI'; // Set the desired locale  'en_US', en_GB, 'fr_FR', fi_FI etc.
+					$formatter = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
+					$arrayConversion['formatedAmount'] = $formatter->formatCurrency($arrayConversion['convertedAmount'], $decodedResponse['quote_currency']);
+				} else {
+					$arrayConversion['convertedAmount'] = null;
+					$arrayConversion['formatedAmount'] = null;
+				}
+
+				return $arrayConversion;
 			} else {
-				$arrayConversion['convertedAmount'] = null;
+				return $decodedResponse;
 			}
-
-			return $arrayConversion;
-		}else{
-			return $decodedResponse;
-		}
 
 		} catch (Exception $e) {
 			$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
@@ -156,7 +189,7 @@ class CurrencyConverterApi
 			return [
 				'status' => 500,
 				'error' => 'Error occurred while loading currencies: ' . $e->getMessage()
-			];		
+			];
 
 		}
 	}

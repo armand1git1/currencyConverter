@@ -73,6 +73,7 @@ switch ($method) {
         $responseValidation =$currencyClass->validateCurrencies($cur1, $cur2);
         if ($responseValidation['status'] === 200) {
             $converterArray = $converterClass->CallAPI("GET", "$url", $amount,$action="convertCurrency");
+            
             print_r($converterArray);
         }else{
             print_r($responseValidation);

@@ -1,5 +1,4 @@
 <?php
-use Curl\Curl;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 include_once '../class/currencyconverterapi.php';
