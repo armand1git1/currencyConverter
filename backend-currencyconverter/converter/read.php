@@ -57,6 +57,7 @@ switch ($method) {
         $converterArray = $converterClass->CallAPI("GET", "$url", 0,"");
         $SavedCurrencylist = $currencyClass->saveCurrencies($converterArray, $filePath);
         echo json_encode($SavedCurrencylist, JSON_UNESCAPED_UNICODE);
+        exit();
         //print_r($SavedterArray);
         break;
     case "PUT":

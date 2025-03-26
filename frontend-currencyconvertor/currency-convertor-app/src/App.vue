@@ -2,45 +2,46 @@
   <div>
     <fieldset style="border: 2px solid lightblue; padding: 10px; margin-bottom: 10px;">
       <legend style="color: blue; font-weight: bold;">Currency Converter</legend>
-      <p style="font-weight: bold; margin-bottom: 25px; color:red">Nb: Due to limited rights on the Api, Only conversion from euro is allowed.</p>
+      <p style="font-weight: bold; margin-bottom: 25px; color:red">Nb: Due to limited rights on the Api, Only conversion
+        from euro is allowed.</p>
 
       <form @submit.prevent="convertCurrency">
-      <div style="display: flex; align-items: center; margin-bottom: 10px;"> 
-        <div style="margin-bottom: 10px; width:200px">
-          <label for="fromCurrency">From Currency:</label>
-        </div>  
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+          <div style="margin-bottom: 10px; width:200px">
+            <label for="fromCurrency">From Currency:</label>
+          </div>
 
-        <div style="margin-bottom: 7px; margin-left: 10px;">
-          <select v-model="fromCurrency">
-            <option value="EUR">EUR</option>
-            <!-- Add more currencies if needed -->
-          </select>
+          <div style="margin-bottom: 7px; margin-left: 10px;">
+            <select v-model="fromCurrency">
+              <option value="EUR">EUR</option>
+              <!-- Add more currencies if needed -->
+            </select>
+          </div>
         </div>
-      </div>  
 
-      <div style="display: flex; align-items: center; margin-bottom: 10px;"> 
-        <div style="margin-bottom: 10px; width:200px">
-          <label for="toCurrency">To Currency:</label>
-        </div>
-        
-        <div style="margin-bottom: 7px; margin-left: 10px;">
-          <select v-model="toCurrency">
-            <option value="EUR">EUR</option>
-            <option value="USD">USD</option>
-            <!-- Add more currencies if needed -->
-          </select>
-        </div>
-      </div>
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+          <div style="margin-bottom: 10px; width:200px">
+            <label for="toCurrency">To Currency:</label>
+          </div>
 
-      <div style="display: flex; align-items: center; margin-bottom: 10px;"> 
+          <div style="margin-bottom: 7px; margin-left: 10px;">
+            <select v-model="toCurrency">
+              <option value="EUR">EUR</option>
+              <option value="USD">USD</option>
+              <!-- Add more currencies if needed -->
+            </select>
+          </div>
+        </div>
 
-        <div style="margin-bottom: 10px; width:200px">
-          <label for="amount">Amount:</label>
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+
+          <div style="margin-bottom: 10px; width:200px">
+            <label for="amount">Amount:</label>
+          </div>
+          <div style="margin-bottom: 7px; margin-left: 10px;">
+            <input type="text" v-model="amount" @input="formatAmount" placeholder="e.g., 1,23" />
+          </div>
         </div>
-        <div style="margin-bottom: 7px; margin-left: 10px;">
-          <input type="text" v-model="amount" @input="formatAmount" placeholder="e.g., 1,23" />
-        </div>
-      </div>
 
         <button type="submit">Convert</button>
       </form>
@@ -77,7 +78,7 @@ export default {
         if (!this.amount || this.amount.trim() === "") {
           this.errorMessage = "Amount cannot be empty.";
           this.convertedValue = null;
-          this.currencyconvertedName= null;
+          this.currencyconvertedName = null;
           return; // Stop execution if the amount is empty
         }
 
@@ -91,10 +92,7 @@ export default {
         console.log("Decimal Part:", decimalPart);
 
         const response = await fetch(
-          //`https://api.example.com/convert?from=${this.fromCurrency}&to=${this.toCurrency}&amount=${this.amount}`
           `https://site.walkap.net/currencyConverter/backend-currencyconverter/converter/read.php?cur1=${this.fromCurrency}&cur2=${this.toCurrency}&amount=${integerPart}&decimal=${decimalPart}`
-          //`https://api.example.com/convert?from=${this.fromCurrency}&to=${this.toCurrency}&amount=${this.amount}`
-
         );
         const data = await response.json();
         // if (response.ok && data.success) {
@@ -111,6 +109,7 @@ export default {
         this.convertedValue = null;
       }
     },
+
     formatAmount(myAmount) {
       // Replace any non-numeric characters except for the comma
       let value = myAmount.target.value.replace(/[^0-9,]/g, "");
@@ -132,6 +131,42 @@ export default {
       const decimalPart = parts[1] || "0"; // Default to "00" if no decimal part
       return [integerPart, decimalPart];
     },
+
+    async fetchUpdateCurrencylist() {
+      try {
+        // Fetch the currency data from the API
+        const response = await fetch(
+          `http://localhost/currencyConverter/backend-currencyconverter/converter/read.php?method=POST`
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          // Save the fetched data locally as a JSON file
+          const jsonData = JSON.stringify(data, null, 2); // Format the JSON data
+          const blob = new Blob([jsonData], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+
+          // Create a temporary link to trigger the download
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = "availableCurrencies.json"; // Name of the file
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          // Update the state with the fetched data
+          this.errorMessage = "";
+        } else {
+          this.errorMessage = "Failed to fetch currency data.";
+        }
+      } catch (error) {
+        this.errorMessage = "An error occurred while fetching currency data.";
+      }
+    },
+    mounted() {
+    // Trigger fetchUpdateCurrencylist when the page is loaded
+    this.fetchUpdateCurrencylist();
+  },
   },
 };
 </script>
