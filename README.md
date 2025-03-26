@@ -1,5 +1,8 @@
 # currencyConverter
 simple app use to convert currency
+Frontend : convertor apps ( Only the conversion from euro is available with my account ) : 
+https://site.walkap.net/currencyConverter/frontend-currencyconvertor/
+
 1) Basic  Scirpts + OOP (object oriented programming) 
 2) The apps : the backend have been executed following instruction of the requirement. 
 3) Testing and implementation 
@@ -25,6 +28,7 @@ if you run the website locally :
 	  
 	  
 Fontend part : 
+https://site.walkap.net/currencyConverter/frontend-currencyconvertor/
 1) Install Vue CLI
 *  Open a terminal (visual studio), type :  
     npm install -g @vue/cli  
@@ -38,4 +42,6 @@ Fontend part :
 3) start development server : 
    npm run serve
 Acceess app locally :  http://localhost:8080
+
+4) run production : npm run build 
  
