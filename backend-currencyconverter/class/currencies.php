@@ -139,6 +139,16 @@ class currencylists
         }
     }
 
+    // Get currency name by code
+    function getCurrencyNameByCode($data, $code)
+    {
+        foreach ($data as $currency) {
+            if ($currency['code'] === $code) {
+                return $currency['name'];
+            }
+        }
+        return "Currency code not found.";
+    }
     // Validate currencies
     function validateCurrencies($cur1, $cur2, $amount, $decimal)
     {
@@ -146,7 +156,7 @@ class currencylists
             $supportedCurrencies = $this->getSupportedcurrencies(__DIR__ . '/../data/currencies.json');
             // Extract the 'code' values from the array of currencies
             $supportedCurrencycodes = array();
-            if (isset($supportedCurrencies['data'])) {
+            if (isset($supportedCurrencies['data']) && is_array($supportedCurrencies['data'])) {
                 $supportedCurrencycodes = array_column($supportedCurrencies['data'], 'code');
             }
 
@@ -160,7 +170,7 @@ class currencylists
 
             }
 
-            
+
             //echo $amount;
             $amount = str_replace(',', '.', $amount);
             if (filter_var($amount, FILTER_VALIDATE_INT) === false || $amount < 0) {
@@ -171,10 +181,18 @@ class currencylists
                     'error' => 'Invalid amount. It must be an integer greater or equals to 0.'
                 ];
             }
-          
-           
+
+
             $decimal = str_replace(',', '.', $decimal);
-           
+            $currencyName = "";
+
+            if (isset($supportedCurrencies['data']) && is_array($supportedCurrencies['data'])) {
+
+                $currencyName = $this->getCurrencyNameByCode($supportedCurrencies['data'], $cur2);
+            }
+
+
+
             if (filter_var($decimal, FILTER_VALIDATE_INT) === false || $decimal < 0) {
                 $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
                 $this->logger->warning('Warning:' . 'Invalid decimal value. It must be an integer greater or equals to 0.');
@@ -183,11 +201,11 @@ class currencylists
                     'error' => 'Invalid decimal value. It must be an integer greater or equals to 0.'
                 ];
             }
-           
 
             return [
                 'status' => 200,
-                'message' => 'Currencies and amount are valid.'
+                'message' => 'Currencies and amount are valid.',
+                'currency_name' => $currencyName,
             ];
         } catch (Exception $e) {
             $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::ERROR));

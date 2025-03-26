@@ -63,7 +63,8 @@ switch ($method) {
     default:
         $responseValidation =$currencyClass->validateCurrencies($cur1, $cur2,$amount,$decimalPart,);
         if ($responseValidation['status'] === 200) {
-            $converterArray = $converterClass->CallAPI("GET", "$url", $amount,$decimalPart, $action="convertCurrency");
+            $currencyName = $responseValidation['currency_name'];
+            $converterArray = $converterClass->CallAPI("GET", "$url", $amount,$decimalPart, $action="convertCurrency", $currencyName);
             echo json_encode($converterArray, JSON_UNESCAPED_UNICODE);
             exit();
             // print_r($converterArray);

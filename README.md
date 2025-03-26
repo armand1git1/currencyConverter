@@ -22,3 +22,20 @@ simple app use to convert currency
 if you run the website locally : 
       - End point : source currency : eur; target currency: usd; monetary value : 100  
       http://localhost/currencyConverter/backend-currencyconverter/converter/read.php?cur1=eur&cur2=usd&amount=100
+	  
+	  
+Fontend part : 
+1) Install Vue CLI
+*  Open a terminal (visual studio), type :  
+    npm install -g @vue/cli  
+* check installation : 
+   vue --version
+   
+2) Create a New Vue Project and navigate to the project 
+   vue create currency-convertor-app
+* go to directory :  cd  currency-convertor-app
+
+3) start development server : 
+   npm run serve
+Acceess app locally :  http://localhost:8080
+ 

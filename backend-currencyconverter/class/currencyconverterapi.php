@@ -49,19 +49,19 @@ class CurrencyConverterApi
 		$this->curl->setOpt(CURLOPT_TIMEOUT, getenv('CURL_TIMEOUT') ?: 30);
 		$this->curl->setOpt(CURLOPT_HTTPHEADER, $this->getMyheader($url));
 	}
-    
+
 	// clean cache from time to time
- 	public function cleanCache()
+	public function cleanCache()
 	{
 		try {
-			if ($this->varCahe->clear()) {			
+			if ($this->varCahe->clear()) {
 				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::INFO));
 				$this->logger->info('Cache cleared successfully.');
 				return [
 					'status' => 200,
 					'message' => 'Cache cleared successfully.'
 				];
-			} else {			
+			} else {
 				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
 				$this->logger->WARNING('Failed to clear cache.');
 				return [
@@ -70,15 +70,16 @@ class CurrencyConverterApi
 				];
 			}
 		} catch (Exception $e) {
-				$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
-				$this->logger->ERROR('Error occurred while clearing cache', ['error' => $e->getMessage()]);
-				return [
-					'status' => 500,
-					'message' => 'Error occurred while clearing cache', ['error' => $e->getMessage()]
-				];
+			$this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::WARNING));
+			$this->logger->ERROR('Error occurred while clearing cache', ['error' => $e->getMessage()]);
+			return [
+				'status' => 500,
+				'message' => 'Error occurred while clearing cache',
+				['error' => $e->getMessage()]
+			];
 		}
 	}
-	public function CallAPI($method, $url, $data = "", $decimalPart=0, $action = "")
+	public function CallAPI($method, $url, $data = "", $decimalPart = 0, $action = "", $currencyName = "")
 	{
 
 		$this->intitializedApi($url);
@@ -162,15 +163,17 @@ class CurrencyConverterApi
 				$this->varCahe->set($cacheKey, $decodedResponse, 300); // Cache for 5 minutes
 
 				// var_dump($response);
+				// print_r($decodedResponse);
+				// exit();
 				$arrayConversion['base_currency'] = $decodedResponse['base_currency'];
 				$arrayConversion['quote_currency'] = $decodedResponse['quote_currency'];
-				$arrayConversion['amount'] = $floatValue = floatval($data . '.' . $decimalPart);;
+				$arrayConversion['currencyName'] = $currencyName;
+				$arrayConversion['amount'] = floatval($data . '.' . $decimalPart);
 				$arrayConversion['quote'] = $decodedResponse['quote'];
 				$arrayConversion['date'] = $decodedResponse['date'];
 
 				// Calculate the converted amount if 'quote' and 'data' are available
 				if (isset($decodedResponse['quote']) && isset($data)) {
-					$floatValue = floatval($data . '.' . $decimalPart);
 					$arrayConversion['convertedAmount'] = $decodedResponse['quote'] * $arrayConversion['amount'];
 					$locale = 'fi_FI'; // Set the desired locale  'en_US', en_GB, 'fr_FR', fi_FI etc.
 					$formatter = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
@@ -179,9 +182,9 @@ class CurrencyConverterApi
 					$arrayConversion['convertedAmount'] = null;
 					$arrayConversion['formatedAmount'] = null;
 				}
-
+				//print_r($arrayConversion);
 				return $arrayConversion;
-			} else {				
+			} else {
 				return $decodedResponse;
 			}
 
