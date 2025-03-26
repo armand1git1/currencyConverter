@@ -1,4 +1,3 @@
-// filepath: c:\laragon\www\currencyConverter\frontend-currencyconvertor\currency-convertor-app\src\AppScript.js
 export default {
     data() {
       return {
@@ -19,7 +18,6 @@ export default {
           const data = await response.json();
   
           if (response.status === 200 && data.data) {
-            // Populate the currencies array with the data from the JSON file
             this.currencies = data.data.filter(currency => currency.active); // Only include active currencies
           } else {
             this.errorMessage = "Failed to load currencies.";

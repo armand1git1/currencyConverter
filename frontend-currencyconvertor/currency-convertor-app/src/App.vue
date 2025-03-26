@@ -14,7 +14,6 @@
           <div style="margin-bottom: 7px; margin-left: 10px;">
             <select v-model="fromCurrency">
               <option value="EUR">EUR</option>
-              <!-- Add more currencies if needed -->
             </select>
           </div>
         </div>
@@ -63,6 +62,4 @@
 import AppScript from "./AppScript.js";
 export default AppScript;
 </script>
-<style>
-/* Add custom styling here if needed */
-</style>
+<style></style>
