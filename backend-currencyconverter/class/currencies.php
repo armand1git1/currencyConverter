@@ -64,9 +64,15 @@ class currencylists
 
             $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/api.log', Logger::INFO));
             $this->logger->info('Currencies saved successfully to' . $filePath . '\n');
+            $response = file_get_contents($filePath);
+            $data =''; 
+            if (isset($response)) {               
+                $data = json_decode($response, true);
+            }
             return [
                 'status' => 200,
-                'success' => 'Currencies saved successfully to' . $filePath . '\n'
+                'success' => 'Currencies saved successfully to' . $filePath . '\n',
+                'data' => $data
             ];
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage();

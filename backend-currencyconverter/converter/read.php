@@ -48,14 +48,16 @@ $currencyClass = new currencylists($mylogger);
 //$method = $_SERVER['REQUEST_METHOD']; // Get the HTTP method;
 
 $filePath = __DIR__ . '/../data/currencies.json';
+
 // $method = "POST";
 switch ($method) {
     case "POST":
-        
+
         $url = "https://swop.cx/rest/currencies";
         $converterArray = $converterClass->CallAPI("GET", "$url", 0,"");
-        $SavedterArray = $currencyClass->saveCurrencies($converterArray, $filePath);
-        print_r($SavedterArray);
+        $SavedCurrencylist = $currencyClass->saveCurrencies($converterArray, $filePath);
+        echo json_encode($SavedCurrencylist, JSON_UNESCAPED_UNICODE);
+        //print_r($SavedterArray);
         break;
     case "PUT":
         $this->curl->put($url, $data);
