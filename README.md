@@ -1,6 +1,6 @@
 # currencyConverter
 simple app use to convert currency
-Frontend : convertor apps ( Only the conversion from euro is available with my account ) : 
+Frontend in Vue.js : convertor apps ( Only the conversion from euro is available with my account ) : 
 https://site.walkap.net/currencyConverter/frontend-currencyconvertor/
 
 1) Basic  Scirpts + OOP (object oriented programming) 
@@ -27,7 +27,7 @@ if you run the website locally :
       http://localhost/currencyConverter/backend-currencyconverter/converter/read.php?cur1=eur&cur2=usd&amount=100
 	  
 	  
-Fontend part : 
+Fontend part :  Vue.js
 https://site.walkap.net/currencyConverter/frontend-currencyconvertor/
 1) Install Vue CLI
 *  Open a terminal (visual studio), type :  
